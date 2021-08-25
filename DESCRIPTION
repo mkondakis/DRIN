@@ -1,0 +1,32 @@
+Package: SCCTempConverter
+Type: Package
+Title: Inferring Developmental rate thermal thresholds statistically in a Bayesian framework
+Version: 0.0.1.1
+Date: 2021-3-5
+Encoding: UTF-8
+Author: Marios Kondakis
+Maintainer: Marios Kondakis <kondakis@gmail.com>
+Description: This is an R-package that makes statistical inference for the predictor (like the Temperature etc) and parameters of interest (like the thermal thresholds) that affect the developmental rates of some species (like insects).
+License: GPL-2
+Lazydata: TRUE
+Imports:
+    ggplot2 (>= 3.2.0),
+    methods,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    rstantools (>= 2.1.1),
+    stringr (>= 1.4.0),
+    xlsx (>= 0.6.0)
+RoxygenNote: 7.1.1
+Biarch: true
+Depends: 
+    R (>= 3.4.0)
+LinkingTo: 
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
+SystemRequirements: GNU make

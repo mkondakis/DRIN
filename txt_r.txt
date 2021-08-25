@@ -1,0 +1,2 @@
+Row: 0 last_time_contacted=0, display_name=Mozart, _id=100, phonebook_bucket_alt=2
+Row: 1 last_time_contacted=0, display_name=Bach, _id=101, phonebook_bucket_alt=2
