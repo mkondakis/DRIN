@@ -1516,8 +1516,7 @@ drin_popp <- function(data, est, mtype="bieri",lik="gauss")
   
   
   #yspline_int <- as.data.frame(spline(ymeddata$x, ymeddata$y))
-  
-  ndata_mtype<-as.data.frame(data[2:4])
+  ndata_mtype<-data.frame(x = data$x,  y = data$y, status = data$status)
   yndata_mtype<-ymeddata
   # convert grouping variables to factor
   yndata_mtype$Legend<-as.factor(yndata_mtype$x)
@@ -1530,14 +1529,14 @@ drin_popp <- function(data, est, mtype="bieri",lik="gauss")
   colval<-colorRampPalette(c("royalblue","red"))
   #colval<-c("blue","#009933","#ffff00","#ff9933","#ff0000","#800000")
   ggplot2::scale_color_brewer(palette="Dark2")
-  ggplot2::ggplot(data = yndata_mtype, aes(x = x, y = y)) + 
+  ggplot2::ggplot(data = yndata_mtype, ggplot2::aes(x = x, y = y)) + 
     #ylim(-0.75, 0.12)+
-    ggplot2::geom_point(data=ndata_mtype, size = 3, aes(x = x, y = y, colour = "#000000"),alpha=1) +
-    #    geom_errorbar(aes(ymin=y1, ymax=y2),width=.6,
+    ggplot2::geom_point(data=ndata_mtype, size = 3, ggplot2::aes(x = x, y = y, colour = "#000000"),alpha=1) +
+    #    ggplot2::geom_errorbar(ggplot2::aes(ymin=y1, ymax=y2),width=.6,
     #                  position=position_dodge(0.5))+
-    ggplot2::geom_line(aes(x = x, y = median, colour="median"), size=1)+
-    ggplot2::geom_ribbon(aes(x = x,ymin=y1,ymax=y2),alpha=0.25, fill="#81DAF5")+
-    ggplot2::geom_ribbon(aes(x = x,ymin=y3,ymax=y4),alpha=0.25, fill="#145fa7")+
+    ggplot2::geom_line(ggplot2::aes(x = x, y = median, colour="median"), size=1)+
+    ggplot2::geom_ribbon(ggplot2::aes(x = x,ymin=y1,ymax=y2),alpha=0.25, fill="#81DAF5")+
+    ggplot2::geom_ribbon(ggplot2::aes(x = x,ymin=y3,ymax=y4),alpha=0.25, fill="#145fa7")+
     ggplot2::labs(
       x = expression("Temperature"~degree*C),
       y = expression("Developmental rate"),
@@ -1550,11 +1549,11 @@ drin_popp <- function(data, est, mtype="bieri",lik="gauss")
     #grid_lines(color = "gray")+
     ggplot2::scale_colour_manual("Legend",labels = c("Data","Median"),
                         values = c("black","red"),
-                        guide = guide_legend(override.aes = list(
+                        guide = ggplot2::guide_legend(override.aes = list(
                           linetype = c(rep("blank", 1),  "solid"),
                           shape = c(16, NA,NA),
                           fill=c("#81DAF5", "#81DAF5"))))+
-    ggplot2::guides( color = guide_legend(
+    ggplot2::guides( color = ggplot2::guide_legend(
       order = 1,
       override.aes = list(
         color = c("black", "red"),
@@ -1563,12 +1562,12 @@ drin_popp <- function(data, est, mtype="bieri",lik="gauss")
         shape = c(16, NA)))) +
     ggplot2::theme_bw() +
     # remove legend key border color & background
-    ggplot2::theme(text = element_text(size=16),
-          legend.key = element_rect(colour = NA, fill = NA),
-          legend.box.background = element_blank())+
-    ggplot2::geom_point(aes(x = x, y = y, size = "95% Credible Interval", shape = NA)) +
-    ggplot2::geom_point(aes(x = x, y = y, size = "50% Credible Interval", shape = NA)) +
-    ggplot2::guides(size = guide_legend(NULL, 
+    ggplot2::theme(text = ggplot2::element_text(size=16),
+          legend.key = ggplot2::element_rect(colour = NA, fill = NA),
+          legend.box.background = ggplot2::element_blank())+
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, size = "95% Credible Interval", shape = NA)) +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, size = "50% Credible Interval", shape = NA)) +
+    ggplot2::guides(size = ggplot2::guide_legend(NULL, 
                                order = 2,
                                override.aes = list(shape = c(15,15), 
                                                    color = c("#145fa7","#81DAF5"),
@@ -1582,7 +1581,7 @@ drin_popp <- function(data, est, mtype="bieri",lik="gauss")
 #' Estimation of Ecological model parameters using HMC sampling
 #' @param C_data data list including: y the response values, x the predictor values, status of censoring 0 if anthropod is not evolved ;
 #' NP is the number predictions to be made. 
-#' @param sparam vector indicating the number of chains, iterrations, burn_in and thinning in Rstan execution. Default is c(3,11000,10000,1);
+#' @param sparam vector indicating the number of chains, iterrations, burn_in and thinning in Rstan execution. Default is c(4,11000,10000,1);
 #' @param mtype is the ecological model type between "bieri" (default), "briere", "analytis" and "lactin";
 #' @param lik is the likelihood choice between "gauss" (default), "igamma" (inverse gamma) in rstan form;
 #' @param prior is a list with parameter priors. If not declared default weekly informative;
@@ -1618,10 +1617,30 @@ drin_hmc <- function(c_data, sparam=c(4,11000,10000,1), mtype="bieri",lik="gauss
   if (length(which(c_data$y==0))>0) zeropresent<- TRUE else zeropresent<- FALSE
   if (zeropresent) c_data$status[which(c_data$y==0)]<-0 else c_data$status<-(rep(1,length(c_data$x)))
   
-  if (!is.null(sparam[1])) nch<-sparam[1] else nch<-4
-  if (!is.null(sparam[2])) iter<-sparam[2] else iter<-11000
-  if (!is.null(sparam[3])) bin<-sparam[3] else bin<-10000
-  if (!is.null(sparam[4])) nth<-sparam[4] else nth<-1
+  
+  nch<-4
+  iter<-11000
+  bin<-10000
+  nth<-1
+  if (is.list(sparam)){
+    if (length(sparam)==1) {
+      if (!is.null(sparam[1])) nch<-sparam[[1]] else nch<-4
+    } else if (length(sparam)==2){
+      if (!is.null(sparam[1])) nch<-sparam[[1]] else nch<-4
+      if (!is.null(sparam[2])) iter<-sparam[[2]] else iter<-11000
+    } else if (length(sparam)==3){
+      if (!is.null(sparam[1])) nch<-sparam[[1]] else nch<-4
+      if (!is.null(sparam[2])) iter<-sparam[[2]] else iter<-11000
+      if (!is.null(sparam[3])) bin<-sparam[[3]] else bin<-10000
+    } else {
+      if (!is.null(sparam[1])) nch<-sparam[[1]] else nch<-4
+      if (!is.null(sparam[2])) iter<-sparam[[2]] else iter<-11000
+      if (!is.null(sparam[3])) bin<-sparam[[3]] else bin<-10000
+      if (!is.null(sparam[4])) nth<-sparam[[4]] else nth<-1
+      print(4)
+    }
+  } else {print("The sparam is not a list. Please use a list instead")}
+  
   
   inittmin<-rgamma(1,shape=100,rate=10)
 

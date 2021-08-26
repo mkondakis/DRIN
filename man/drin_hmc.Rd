@@ -16,7 +16,7 @@ drin_hmc(
 )
 }
 \arguments{
-\item{sparam}{vector indicating the number of chains, iterrations, burn_in and thinning in Rstan execution. Default is c(3,11000,10000,1);}
+\item{sparam}{vector indicating the number of chains, iterrations, burn_in and thinning in Rstan execution. Default is c(4,11000,10000,1);}
 
 \item{mtype}{is the ecological model type between "bieri" (default), "briere", "analytis" and "lactin";}
 
