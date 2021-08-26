@@ -1618,11 +1618,11 @@ drin_hmc <- function(c_data, sparam=c(4,11000,10000,1), mtype="bieri",lik="gauss
   if (length(which(c_data$y==0))>0) zeropresent<- TRUE else zeropresent<- FALSE
   if (zeropresent) c_data$status[which(c_data$y==0)]<-0 else c_data$status<-(rep(1,length(c_data$x)))
   
+  if (!is.null(sparam[1])) nch<-sparam[1] else nch<-4
+  if (!is.null(sparam[2])) iter<-sparam[2] else iter<-11000
+  if (!is.null(sparam[3])) bin<-sparam[3] else bin<-10000
+  if (!is.null(sparam[4])) nth<-sparam[4] else nth<-1
   
-  nch<-sparam[1]
-  iter<-sparam[2]
-  bin<-sparam[3]
-  nth<-sparam[4]
   inittmin<-rgamma(1,shape=100,rate=10)
 
 if (lik=="igamma") {
