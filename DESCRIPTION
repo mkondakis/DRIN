@@ -1,4 +1,4 @@
-Package: SCCTempConverter
+Package: DRIN
 Type: Package
 Title: Inferring Developmental rate thermal thresholds statistically in a Bayesian framework
 Version: 0.0.1.1
